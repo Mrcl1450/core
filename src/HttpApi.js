@@ -78,12 +78,19 @@ class UwaveHttpApi extends Router {
     uw.httpApi = new UwaveHttpApi(uw, {
       secret: options.secret,
     });
+    
+    app.use(helmet());
 
-    uw.express.use(helmet({
-      referrerPolicy: {
-        policy: ['origin-when-cross-origin'],
-      },
-    }));
+    app.use(
+      helmet.contentSecurityPolicy({
+        directives: {
+          defaultSrc: ["*", "'unsafe-inline'"],
+          scriptSrc: ["*", "'unsafe-inline'"],
+          styleSrc: ["*", "'unsafe-inline'"],
+          upgradeInsecureRequests: [],
+        },
+      })
+    );
 
     const corsOptions = {
       origin(origin, callback) {
