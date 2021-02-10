@@ -79,9 +79,9 @@ class UwaveHttpApi extends Router {
       secret: options.secret,
     });
     
-    app.use(helmet());
+    uw.express.use(helmet());
 
-    app.use(
+    uw.express.use(
       helmet.contentSecurityPolicy({
         directives: {
           defaultSrc: ["*", "'unsafe-inline'"],
