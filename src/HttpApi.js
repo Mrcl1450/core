@@ -8,8 +8,6 @@ const cors = require('cors');
 const helmet = require('helmet');
 const http = require('http');
 const debug = require('debug')('uwave:http-api');
-const https = require('https');
-const fs = require('fs');
 
 // routes
 const authenticate = require('./routes/authenticate');
@@ -41,7 +39,6 @@ function defaultCreatePasswordResetEmail({ token, requestUrl }) {
     subject: 'üWave Password Reset Request',
     text: `
       Hello,
-
       To reset your password, please visit:
       ${resetLink}
     `,
@@ -67,18 +64,19 @@ class UwaveHttpApi extends Router {
       secret: options.secret,
     });
     
-    uw.express.use(helmet());
-
-    uw.express.use(
-      helmet.contentSecurityPolicy({
+    uw.express.use(helmet({
+      referrerPolicy: {
+        policy: ['origin-when-cross-origin'],
+      },
+      contentSecurityPolicy: {
         directives: {
           defaultSrc: ["*", "'unsafe-inline'"],
           scriptSrc: ["*", "'unsafe-inline'"],
           styleSrc: ["*", "'unsafe-inline'"],
           upgradeInsecureRequests: [],
         },
-      })
-    );
+      },
+    }));
 
     const corsOptions = {
       origin(origin, callback) {
