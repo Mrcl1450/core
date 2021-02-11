@@ -58,22 +58,10 @@ class UwaveHttpApi extends Router {
         runtimeOptions = value;
       }
     });
-    
-    // Certificate
-    const privateKey = fs.readFileSync("/etc/letsencrypt/live/edmspot.ml/privkey.pem", "utf8");	
-    const certificate = fs.readFileSync("/etc/letsencrypt/live/edmspot.ml/cert.pem", "utf8");	
-    const ca = fs.readFileSync("/etc/letsencrypt/live/edmspot.ml/chain.pem", "utf8");	
-
-
-    const credentials = {	
-      key: privateKey,	
-      cert: certificate,	
-      ca: ca	
-    };
 
     debug('setup', runtimeOptions);
     uw.express = express();
-    uw.server = https.createServer(credentials, uw.express);
+    uw.server = http.createServer(uw.express);
 
     uw.httpApi = new UwaveHttpApi(uw, {
       secret: options.secret,
